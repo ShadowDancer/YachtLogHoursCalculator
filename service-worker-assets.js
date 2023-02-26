@@ -53,7 +53,7 @@
       "url": "_framework\/icudt.dat"
     },
     {
-      "hash": "sha256-u3qQZyUI3myiVo4zYhD5YXdbJLuQbuF0MpG8c7Zs6Q8=",
+      "hash": "sha256-n93WbUMlRRsHijCP+FJvTC9Y\/OLccPOyRCpYD9S8q8s=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -205,7 +205,7 @@
       "url": "_framework\/System.Text.RegularExpressions.dll"
     },
     {
-      "hash": "sha256-CQCR3c4FBNLQhH46mslMdBeFFeMjrGFSLFMnqXdQJ7M=",
+      "hash": "sha256-p1+cewSz+1LdSNgZJqSGbZVwAVt6Po2zvTBoxiCqY4s=",
       "url": "_framework\/YachtLogHoursCalculator.dll"
     },
     {
@@ -217,5 +217,5 @@
       "url": "_content\/MudBlazor\/MudBlazor.min.js"
     }
   ],
-  "version": "V6LIBDsD"
+  "version": "JCc1MLak"
 };
