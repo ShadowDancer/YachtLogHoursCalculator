@@ -1,6 +1,6 @@
 {
   "name": "Kalkulator godzin dla dziennika jachtowego",
-  "short_name": "Kalkulator godzin dla dziennika jachtowego",
+  "short_name": "LogCalc",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
