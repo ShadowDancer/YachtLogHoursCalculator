@@ -1,0 +1,59 @@
+﻿@using YachtLogHoursCalculator.Calculator
+
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">Wpisy w dzienniku</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTable Items="@entries" Breakpoint="Breakpoint.Sm" Dense=true Striped=true Bordered=true>
+            <ColGroup>
+                <col />
+                <col />
+                <col style="width: 10%;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh>Godzina</MudTh>
+                <MudTh>Rodzaj</MudTh>
+                <MudTh>Usuń</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Sign">@context.StartTime.ToString("hhmm")</MudTd>
+                <MudTd DataLabel="Name">@context.Type</MudTd>
+                <MudTd DataLabel="Remove"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => Remove(context)" /></MudTd>
+            </RowTemplate>
+        </MudTable>
+
+        @if (entries.Count > 0)
+        {
+            if (entries.First().StartTime != TimeSpan.Zero)
+            {
+                <MudStack Row="true" Class="ma-5">
+                    <MudIcon Color="Color.Warning" Icon="@Icons.Material.Filled.Warning" />
+                    <MudText Color="Color.Warning">Brakuje wpisu dla początku doby!</MudText>
+                </MudStack>
+            }
+
+        }
+        else
+        {
+            <MudStack Row="true" Class="ma-5">
+                <MudIcon Color="Color.Info" Icon="@Icons.Material.Filled.Info" />
+                <MudText Color="Color.Info">Tu pojawią się dodane wpisy</MudText>
+            </MudStack>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public List<LogEntry> entries { get; set; } = new List<LogEntry>();
+
+    [Parameter]
+    public EventCallback<List<LogEntry>> entriesChanged { get; set; }
+
+    public void Remove(LogEntry entry)
+    {
+        entries.Remove(entry);
+        entriesChanged.InvokeAsync(entries);
+    }
+}

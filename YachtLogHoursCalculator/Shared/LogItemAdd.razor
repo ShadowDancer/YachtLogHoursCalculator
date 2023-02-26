@@ -1,0 +1,83 @@
+﻿@using YachtLogHoursCalculator.Calculator;
+@inject ISnackbar Snackbar
+
+
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">Dodaj wpis</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudStack Class="pa-5">
+            <MudTimePicker Label="Czas wpisu" TimeFormat="HHmm" AutoClose="true" @bind-Time:get=SelectedTime @bind-Time:set=SelectedTimeSet />
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+                @foreach (var type in LogEntry.Types)
+                {
+                    <MudButton OnClick="() => Add(type)">@type</MudButton>
+                }
+            </MudButtonGroup>
+        </MudStack>
+    </MudCardContent>
+</MudCard>
+
+@code {
+
+    [Parameter]
+    public List<LogEntry> entries { get; set; } = new List<LogEntry>();
+
+    [Parameter]
+    public EventCallback<List<LogEntry>> entriesChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SelectedTimeSet(null);
+        base.OnInitialized();
+    }
+
+    public void Add(string name)
+    {
+        var value = SelectedTime!.Value;
+        if (entries.Any(n => n.StartTime == value))
+        {
+            Snackbar.Add("Wpis na " + value.ToString("hhmm") + " jest już dodany", Severity.Error);
+            return;
+        }
+
+        entries.Add(new LogEntry(value, name));
+
+        entries.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+
+        var newTime = entries.Max(n => n.StartTime);
+        SelectedTimeSet(newTime);
+
+        entriesChanged.InvokeAsync(entries);
+    }
+
+    public void SelectedTimeSet(TimeSpan? newValue)
+    {
+        if (newValue == null)
+        {
+            if (entries.Count == 0)
+            {
+                SelectedTime = TimeSpan.Zero;
+                StateHasChanged();
+            }
+            else
+            {
+                SelectedTime = entries.Max(n => n.StartTime);
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            if (SelectedTime == newValue)
+            {
+                return;
+            }
+            SelectedTime = newValue;
+            StateHasChanged();
+        }
+    }
+
+    private TimeSpan? SelectedTime { get; set; } = TimeSpan.Zero;
+
+}

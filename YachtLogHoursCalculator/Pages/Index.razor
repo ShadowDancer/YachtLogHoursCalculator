@@ -1,0 +1,57 @@
+﻿@page "/"
+@using YachtLogHoursCalculator.Calculator
+
+<PageTitle>Kalkulator godzin dla dziennika jachtowego</PageTitle>
+
+<MudContainer Style="width: 100; height: 100%">
+    <MudGrid>
+        <MudItem xs=12>
+            <LogItems entries="@entries" entriesChanged="@EntriesChanged" />
+        </MudItem>
+        <MudItem xs=12>
+            <LogItemAdd entries="@entries" entriesChanged="@EntriesChanged" />
+        </MudItem>
+        <MudItem xs=12>
+            <LogSummary previousDay=@previousDay entries="@entries" />
+        </MudItem>
+        <MudItem xs=12>
+            <MudSpacer/>
+            <MudButton Class="object-right" OnClick="() => NextDay()" Color="Color.Primary" Variant="Variant.Filled">Następny dzień</MudButton>
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>
+
+
+
+@code {
+        Dictionary<string, TimeSpan> previousDay { get; set; } = new Dictionary<string, TimeSpan>();
+
+        List<LogEntry> entries { get; set; } = new List<LogEntry>();
+
+        public void NextDay()
+        {
+            if (entries.Any())
+            {
+                var typeNextDayStartsWith = entries.Last().Type;
+                previousDay = AddTimes(previousDay, HourCalculator.Calculate(entries));
+                entries.Clear();
+                entries.Add(new LogEntry(TimeSpan.Zero, typeNextDayStartsWith));
+            }        
+        }
+
+        public void EntriesChanged(List<LogEntry> entries)
+        {
+            StateHasChanged();
+        }
+
+        private Dictionary<string, TimeSpan> AddTimes(Dictionary<string, TimeSpan> a, Dictionary<string, TimeSpan> b)
+        {
+            var z =
+            from item in a.Concat(b)
+            group item by item.Key into newItems
+            select newItems;
+
+            return z.ToDictionary(n => n.Key, n => n.Select(n => n.Value).Aggregate(TimeSpan.Zero, (a, b) => a.Add(b)));
+    }
+}
