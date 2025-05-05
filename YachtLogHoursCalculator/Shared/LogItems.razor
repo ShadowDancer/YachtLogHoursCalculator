@@ -5,7 +5,7 @@
         <MudText Typo="Typo.h6">Wpisy w dzienniku</MudText>
     </MudCardHeader>
     <MudCardContent>
-        <MudTable Items="@entries" Breakpoint="Breakpoint.Sm" Dense=true Striped=true Bordered=true>
+        <MudTable Items="@entries" Dense=true Striped=true Bordered=true Breakpoint="Breakpoint.None">
             <ColGroup>
                 <col />
                 <col />
@@ -17,9 +17,9 @@
                 <MudTh>Usuń</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Sign">@context.StartTime.ToString("hhmm")</MudTd>
-                <MudTd DataLabel="Name">@context.Type.ToDisplayName()</MudTd>
-                <MudTd DataLabel="Remove"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => Remove(context)" /></MudTd>
+                <MudTd>@context.StartTime.ToString("hhmm")</MudTd>
+                <MudTd>@context.Type.ToDisplayName()</MudTd>
+                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => Remove(context)" /></MudTd>
             </RowTemplate>
         </MudTable>
 

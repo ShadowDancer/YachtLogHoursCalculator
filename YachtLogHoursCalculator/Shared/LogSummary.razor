@@ -24,7 +24,7 @@
                     <td>@Format(PreviousDay.Sails)</td>
                     <td>@Format(PreviousDay.Engine)</td>
                     <td>@Format(PreviousDay.SailsAndEngine)</td>
-                    <td>@Format(PreviousDay.Sum)</td>
+                    <td>@FormatTotal(PreviousDay.Sum)</td>
                 </tr>
                 <tr>
                     <td>Bieżąca doba</td>
@@ -32,7 +32,7 @@
                     <td>@Format(Summary.Sails)</td>
                     <td>@Format(Summary.Engine)</td>
                     <td>@Format(Summary.SailsAndEngine)</td>
-                    <td>@Format(Summary.Sum)</td>
+                    <td>@FormatTotal(Summary.Sum)</td>
                 </tr>
                 <tr>
                     <td>Do przeniesienia</td>
@@ -40,7 +40,7 @@
                     <td>@Format(NextDay.Sails)</td>
                     <td>@Format(NextDay.Engine)</td>
                     <td>@Format(NextDay.SailsAndEngine)</td>
-                    <td>@Format(NextDay.Sum)</td>
+                    <td>@FormatTotal(NextDay.Sum)</td>
                 </tr>
             </tbody>
         </MudSimpleTable>
@@ -65,10 +65,26 @@
         return (int)timeSpan.TotalHours + ":" + ((int)timeSpan.Minutes).ToString().PadLeft(2, '0');
     }
 
+    public string FormatTotal(TimeSpan timeSpan)
+    {
+        string hourFormat = Format(timeSpan);
+        int days = (int)timeSpan.TotalDays;
+        
+        if (days > 0)
+        {
+            int remainingHours = timeSpan.Hours;
+            int minutes = timeSpan.Minutes;
+            string remainingTime = $"{remainingHours}:{minutes.ToString().PadLeft(2, '0')}";
+            return $"{hourFormat} ({days}d {remainingTime})";
+        }
+        
+        return hourFormat;
+    }
+
     protected override void OnParametersSet()
     {
         Summary = LogEntrySet.FromEntries(Entries);
-    NextDay = LogEntrySet.FromEntries(Entries, PreviousDay);
+        NextDay = LogEntrySet.FromEntries(Entries, PreviousDay);
         
         StateHasChanged();
         base.OnParametersSet();
