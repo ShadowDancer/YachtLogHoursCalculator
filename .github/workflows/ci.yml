@@ -11,7 +11,11 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '9.0.x'
+      - name: Install WASM tooling
+        run: dotnet workload install wasm-tools
       - name: Install dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
+      - name: Publish
+        run: dotnet publish --configuration Release --no-build -o output

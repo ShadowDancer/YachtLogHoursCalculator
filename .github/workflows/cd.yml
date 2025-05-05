@@ -14,6 +14,8 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '9.0.x'
+      - name: Install WASM tooling
+        run: dotnet workload install wasm-tools
       - name: Update base url
         run: sed -i 's|<base href="/" />|\<base href="/YachtLogHoursCalculator/" /\>|g' ./YachtLogHoursCalculator/wwwroot/index.html
       - name: Build

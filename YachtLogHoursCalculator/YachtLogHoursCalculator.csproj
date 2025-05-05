@@ -4,7 +4,12 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <TrimMode>full</TrimMode>
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantTimezone>true</InvariantTimezone>
   </PropertyGroup>
 
   <ItemGroup>
