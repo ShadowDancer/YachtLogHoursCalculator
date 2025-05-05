@@ -10,48 +10,37 @@
             <thead>
                 <tr>
                     <td></td>
-
-                    @foreach (var type in LogEntry.Types)
-                    {
-                        <td>@type</td>
-                    }
+                    <td>@EntryType.Moored.ToDisplayName()</td>
+                    <td>@EntryType.Sail.ToDisplayName()</td>
+                    <td>@EntryType.Engine.ToDisplayName()</td>
+                    <td>Łącznie żeglugi</td>
                     <td>Razem</td>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>Z poprzedniej doby</td>
-                    @foreach (var type in LogEntry.Types)
-                    {
-                        <td>
-                            <MudTextField T=string TextChanged="(string s) => SetPreviousDay(s, type)" Text=@GetPreviousDay(type) DisableUnderLine=true Style="text-align: right" />
-                        </td>
-                    }
-                    <td>@Format(SumTimeSpans(previousDay.Values))</td>
+                    <td>@Format(PreviousDay.Moored)</td>
+                    <td>@Format(PreviousDay.Sails)</td>
+                    <td>@Format(PreviousDay.Engine)</td>
+                    <td>@Format(PreviousDay.SailsAndEngine)</td>
+                    <td>@Format(PreviousDay.Sum)</td>
                 </tr>
                 <tr>
                     <td>Bieżąca doba</td>
-                    @foreach (var type in LogEntry.Types)
-                    {
-
-                        <td style="text-align:right">
-                            @if (summary.TryGetValue(type, out var timeSpan))
-                            {
-                                <span>@Format(timeSpan)</span>
-                            }
-                        </td>
-                    }
-                    <td>@Format(SumTimeSpans(summary.Values))</td>
+                    <td>@Format(Summary.Moored)</td>
+                    <td>@Format(Summary.Sails)</td>
+                    <td>@Format(Summary.Engine)</td>
+                    <td>@Format(Summary.SailsAndEngine)</td>
+                    <td>@Format(Summary.Sum)</td>
                 </tr>
                 <tr>
                     <td>Do przeniesienia</td>
-                    @foreach (var type in LogEntry.Types)
-                    {
-                        var totalTime = previousDay.GetValueOrDefault(type) + summary.GetValueOrDefault(type);
-
-                        <td style="text-align:right">@(Format(totalTime))</td>
-                    }
-                    <td>@Format(SumTimeSpans(previousDay.Values.Concat(summary.Values)))</td>
+                    <td>@Format(NextDay.Moored)</td>
+                    <td>@Format(NextDay.Sails)</td>
+                    <td>@Format(NextDay.Engine)</td>
+                    <td>@Format(NextDay.SailsAndEngine)</td>
+                    <td>@Format(NextDay.Sum)</td>
                 </tr>
             </tbody>
         </MudSimpleTable>
@@ -62,94 +51,26 @@
 
 @code {
     [Parameter]
-    public List<LogEntry> entries { get; set; } = new List<LogEntry>();
+    public List<LogEntry> Entries { get; set; } = new();
 
     [Parameter]
-    public Dictionary<string, TimeSpan> previousDay { get; set; } = new Dictionary<string, TimeSpan>();
+    public LogEntrySet PreviousDay { get; set; } = LogEntrySet.Empty;
 
-    public Dictionary<string, TimeSpan> summary { get; set; } = new Dictionary<string, TimeSpan>();
-
-    public string GetPreviousDay(string type)
-    {
-        if (previousDay.ContainsKey(type))
-        {
-            return Format(previousDay[type]);
-        }
-
-        return Format(TimeSpan.Zero);
-    }
-
-    public void SetPreviousDay(string newValue, string type)
-    {
-        string value = newValue;
-        TimeSpan parsedValue;
-
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return;
-        }
-
-        if (!value.All(n => char.IsDigit(n) || n == ':'))
-        {
-            return;
-        }
-
-        int hours = 0;
-        int minutes = 0;
-
-        if (value.Contains(":"))
-        {
-            string[] split = value.Split(":");
-
-            if (split.Length < 2 || !int.TryParse(split[0], out hours))
-            {
-                return;
-            }
-
-            if (!int.TryParse(split[1], out minutes))
-            {
-                return;
-            }
-        }
-        else
-        {
-            if (value.Length != 4)
-            {
-                return;
-            }
-
-            hours = int.Parse(value.Substring(0, 2));
-
-            minutes = int.Parse(value.Substring(2, 2));
-
-        }
-
-        parsedValue = new TimeSpan(hours, minutes, 0);
-        previousDay[type] = parsedValue;
-    }
+    public LogEntrySet Summary { get; set; } = LogEntrySet.Empty;
+    
+    public LogEntrySet NextDay { get; set; } = LogEntrySet.Empty;
 
     public string Format(TimeSpan timeSpan)
     {
-        return ((int)timeSpan.TotalHours) + ":" + ((int)timeSpan.Minutes).ToString().PadLeft(2, '0');
+        return (int)timeSpan.TotalHours + ":" + ((int)timeSpan.Minutes).ToString().PadLeft(2, '0');
     }
 
     protected override void OnParametersSet()
     {
-        var newSummary = HourCalculator.Calculate(entries);
-        summary = newSummary;
+        Summary = LogEntrySet.FromEntries(Entries);
+    NextDay = LogEntrySet.FromEntries(Entries, PreviousDay);
+        
         StateHasChanged();
         base.OnParametersSet();
-    }
-
-    private TimeSpan SumTimeSpans(IEnumerable<TimeSpan> values)
-    {
-        var aggregate = TimeSpan.Zero;
-
-        foreach(var timeSpan in values)
-        {
-            aggregate += timeSpan;
-        }
-
-        return aggregate;
     }
 }

@@ -18,7 +18,7 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Sign">@context.StartTime.ToString("hhmm")</MudTd>
-                <MudTd DataLabel="Name">@context.Type</MudTd>
+                <MudTd DataLabel="Name">@context.Type.ToDisplayName()</MudTd>
                 <MudTd DataLabel="Remove"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => Remove(context)" /></MudTd>
             </RowTemplate>
         </MudTable>
