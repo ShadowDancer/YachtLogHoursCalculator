@@ -1,0 +1,42 @@
+@using YachtLogHoursCalculator.Calculator
+
+<MudCard Class="mb-4">
+    <MudCardContent>
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudStack Row="true" Spacing="2">
+                <MudButton OnClick="PreviousDay" Disabled="@(CurrentDay <= 1)" Variant="Variant.Outlined" Color="Color.Primary">
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowBackIos" Size="Size.Small" />
+                </MudButton>
+                <MudText Typo="Typo.h6" Class="my-auto">Dzień @CurrentDay</MudText>
+                <MudButton OnClick="NextDay" Disabled="@(CurrentDay >= TotalDays)" Variant="Variant.Outlined" Color="Color.Primary">
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowForwardIos" Size="Size.Small" />
+                </MudButton>
+            </MudStack>
+            <MudText Typo="Typo.caption">Łącznie dni: @TotalDays</MudText>
+        </MudStack>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public int CurrentDay { get; set; }
+
+    [Parameter]
+    public int TotalDays { get; set; }
+
+    [Parameter]
+    public EventCallback OnPreviousDay { get; set; }
+
+    [Parameter]
+    public EventCallback OnNextDay { get; set; }
+
+    private async Task PreviousDay()
+    {
+        await OnPreviousDay.InvokeAsync();
+    }
+
+    private async Task NextDay()
+    {
+        await OnNextDay.InvokeAsync();
+    }
+} 
