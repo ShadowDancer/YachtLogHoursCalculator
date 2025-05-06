@@ -6,39 +6,88 @@
 <MudContainer Style="width: 100%; height: 100%">
     <MudGrid>
         <MudItem xs=12>
-            <LogItems entries="@entries" entriesChanged="@EntriesChanged"/>
+            <DayNavigator 
+                CurrentDay="@currentDayNumber" 
+                TotalDays="@days.Count" 
+                OnPreviousDay="@ViewPreviousDay" 
+                OnNextDay="@ViewNextDay" />
         </MudItem>
         <MudItem xs=12>
-            <LogItemAdd entries="@entries" entriesChanged="@EntriesChanged"/>
+            <LogItems entries="@currentDay.Entries" entriesChanged="@EntriesChanged"/>
         </MudItem>
         <MudItem xs=12>
-            <LogSummary PreviousDay=@previousDay Entries="@entries"/>
+            <LogItemAdd entries="@currentDay.Entries" entriesChanged="@EntriesChanged"/>
+        </MudItem>
+        <MudItem xs=12>
+            <LogSummary PreviousDay="@currentDay.PreviousDay" Entries="@currentDay.Entries"/>
         </MudItem>
         <MudItem xs=12>
             <MudSpacer/>
-            <MudButton Class="object-right" OnClick="() => NextDay()" Color="Color.Primary" Variant="Variant.Filled">
+            <MudButton Class="object-right" OnClick="() => CreateNewDay()" Color="Color.Primary" Variant="Variant.Filled">
                 Następny dzień
             </MudButton>
         </MudItem>
     </MudGrid>
-
 </MudContainer>
 
-
-
 @code {
-    LogEntrySet previousDay { get; set; } = LogEntrySet.Empty;
-
-    List<LogEntry> entries { get; set; } = new();
-
-    public void NextDay()
+    // Day tracking
+    private int currentDayNumber = 1;
+    private List<Day> days = new List<Day>();
+    
+    private Day currentDay => 
+        currentDayNumber <= days.Count 
+            ? days[currentDayNumber - 1] 
+            : CreateNewDay();
+    
+    private Day CreateNewDay()
     {
-        if (entries.Any())
+        var date = DateTime.Today.AddDays(days.Count);
+        var previousDay = days.Count > 0 
+            ? days.Last().GetNextDaySummary() 
+            : LogEntrySet.Empty;
+            
+        var newDay = new Day(date, previousDay);
+        
+        // If we have previous days, initialize the new day with the last entry type
+        if (days.Count > 0 && days.Last().Entries.Any())
         {
-            var typeNextDayStartsWith = entries.Last().Type;
-            previousDay = LogEntrySet.FromEntries(entries, previousDay);
-            entries.Clear();
-            entries.Add(new LogEntry(TimeSpan.Zero, typeNextDayStartsWith));
+            var lastEntryType = days.Last().Entries.Last().Type;
+            newDay.Entries.Add(new LogEntry(TimeSpan.Zero, lastEntryType));
+        }
+        
+        currentDayNumber = days.Count + 1;
+        days.Add(newDay);
+        return newDay;
+    }
+
+    protected override void OnInitialized()
+    {
+        // Initialize the first day if no days exist
+        if (days.Count == 0)
+        {
+            CreateNewDay();
+        }
+        
+        base.OnInitialized();
+    }
+
+    public void ViewNextDay()
+    {
+        if (currentDayNumber < days.Count && currentDay.Entries.Any())
+        {
+            currentDayNumber++;
+            StateHasChanged();
+            return;
+        }
+    }
+    
+    public void ViewPreviousDay()
+    {
+        if (currentDayNumber > 1)
+        {
+            currentDayNumber--;
+            StateHasChanged();
         }
     }
 
