@@ -32,7 +32,7 @@
                     <td>@Format(Summary.Sails)</td>
                     <td>@Format(Summary.Engine)</td>
                     <td>@Format(Summary.SailsAndEngine)</td>
-                    <td>@FormatTotal(Summary.Sum)</td>
+                    <td>@Format(Summary.Sum)</td>
                 </tr>
                 <tr>
                     <td>Do przeniesienia</td>
@@ -50,10 +50,10 @@
 
 
 @code {
-    [Parameter]
+    [Parameter, EditorRequired]
     public List<LogEntry> Entries { get; set; } = new();
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public LogEntrySet PreviousDay { get; set; } = LogEntrySet.Empty;
 
     public LogEntrySet Summary { get; set; } = LogEntrySet.Empty;

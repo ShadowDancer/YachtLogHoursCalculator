@@ -10,7 +10,7 @@
 
 <MudContainer Style="width: 100%; height: 100%; padding: 1rem">
     <MudGrid>
-        <MudItem xs=12>
+        <MudItem xs="12">
             <MudCard>
                 <MudCardContent>
                     <MudStack Row="true">
@@ -31,18 +31,18 @@
                 </MudCardContent>
             </MudCard>
         </MudItem>
-        <MudItem xs=12>
-            <LogItems entries="@StateService.CurrentDay.Entries" entriesChanged="@EntriesChanged"/>
+        <MudItem xs="12">
+            <LogItems Entries="@StateService.CurrentDay.Entries" EntriesChanged="@EntriesChanged" CurrentDay="@StateService.CurrentDayNumber"/>
         </MudItem>
-        <MudItem xs=12>
-            <LogItemAdd entries="@StateService.CurrentDay.Entries" entriesChanged="@EntriesChanged"/>
+        <MudItem xs="12">
+            <LogItemAdd Entries="@StateService.CurrentDay.Entries" EntriesChanged="@EntriesChanged" IsLastDay="@StateService.IsLastDay"/>
         </MudItem>
-        <MudItem xs=12>
+        <MudItem xs="12">
             <LogSummary PreviousDay="@StateService.CurrentDay.PreviousDay" Entries="@StateService.CurrentDay.Entries"/>
         </MudItem>
-        <MudItem xs=12>
+        <MudItem xs="12">
             <MudSpacer/>
-            <MudButton Class="object-right" OnClick="() => OpenNewDay()" Color="Color.Primary" Variant="Variant.Filled">
+            <MudButton Class="object-right" Disabled="!StateService.IsLastDay" OnClick="() => OpenNewDay()" Color="Color.Primary" Variant="Variant.Filled">
                 Następny dzień
             </MudButton>
         </MudItem>
@@ -54,10 +54,10 @@
     private async Task OnCloseLogClick()
     {
         bool? result = await DialogService.ShowMessageBox(
-            "Potwierdzenie",
-            "Czy na pewno chcesz zakończyć dziennik? Spowoduje to usunięcie wszystkich wprowadzonych danych.",
-            yesText: "Tak, zamknij dziennik",
-            cancelText: "Anuluj"
+            "Oficerze!",
+            "Czy na pewno chcesz zakończyć dziennik? Spowoduje to usunięcie wszystkich wprowadzonych danych",
+            yesText: "Tak, już nie wrócę na morze!",
+            cancelText: "Hej na morze czas!"
         );
 
         if (result == true)
@@ -75,10 +75,10 @@
         if (isEmptyDay)
         {
             bool? result = await DialogService.ShowMessageBox(
-                "Potwierdzenie",
-                "Czy pewno dzisiaj nic się nie działo? Nie dodano wpisów na dzisaj.",
+                "Oficerze!",
+                "Dzisiaj nic się nie działo? Czy na pewno chcesz otworzyć nowy dzień?",
                 yesText: "Tak, otwórz nowy dzień",
-                cancelText: "Anuluj"
+                cancelText: "Ooops, przypadkiem kliknąłem"
             );
 
             if (result != true)

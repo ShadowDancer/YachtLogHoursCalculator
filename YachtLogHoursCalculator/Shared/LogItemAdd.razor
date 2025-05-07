@@ -5,12 +5,23 @@
 
 <MudCard>
     <MudCardHeader>
-        <MudText Typo="Typo.h6">Dodaj wpis</MudText>
+        <MudStack>
+            <MudText Typo="Typo.h6">Dodaj wpis</MudText>
+            <MudText Typo="Typo.subtitle2" Color="Color.Info" Class="d-flex align-center">
+                <MudIcon Size="Size.Small" Icon="@Icons.Material.Outlined.Info"/> Przytrzymaj i przeciągnij wskazówkę aby precyzyjnie wybrać godzinę
+            </MudText>
+            @if (!IsLastDay)
+            {
+                <MudText Color="Color.Warning" po="Typo.h6" Class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Warning"/> Edytujesz historyczne dane
+                </MudText>
+            }
+        </MudStack>
     </MudCardHeader>
     <MudCardContent>
         <MudStack Class="pa-5">
             <MudTimePicker Label="Czas wpisu" TimeFormat="HHmm" AutoClose="true" @bind-Time:get=SelectedTime @bind-Time:set=SelectedTimeSet />
-            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled" DropShadow="false">
                 @foreach (var type in new [] { EntryType.Moored, EntryType.Sail, EntryType.Engine })
                 {
                     <MudButton OnClick="() => Add(type)">@type.ToDisplayName()</MudButton>
@@ -22,12 +33,15 @@
 
 @code {
 
-    [Parameter]
-    public List<LogEntry> entries { get; set; } = new List<LogEntry>();
+    [Parameter, EditorRequired]
+    public List<LogEntry> Entries { get; set; } = new();
 
-    [Parameter]
-    public EventCallback<List<LogEntry>> entriesChanged { get; set; }
+    [Parameter, EditorRequired]
+    public EventCallback<List<LogEntry>> EntriesChanged { get; set; }
 
+    [Parameter, EditorRequired]
+    public bool IsLastDay { get; set; }
+    
     protected override void OnInitialized()
     {
         SelectedTimeSet(null);
@@ -37,36 +51,36 @@
     public void Add(EntryType name)
     {
         var value = SelectedTime!.Value;
-        var existingEntry = entries.FirstOrDefault(n => n.StartTime == value);
+        var existingEntry = Entries.FirstOrDefault(n => n.StartTime == value);
         if (existingEntry != null)
         {
-            entries[entries.IndexOf(existingEntry)] = new LogEntry(value, name);
-            entriesChanged.InvokeAsync(entries);
+            Entries[Entries.IndexOf(existingEntry)] = new LogEntry(value, name);
+            EntriesChanged.InvokeAsync(Entries);
             return;
         }
 
-        entries.Add(new LogEntry(value, name));
+        Entries.Add(new LogEntry(value, name));
 
-        entries.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+        Entries.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
 
-        var newTime = entries.Max(n => n.StartTime);
+        var newTime = Entries.Max(n => n.StartTime);
         SelectedTimeSet(newTime);
 
-        entriesChanged.InvokeAsync(entries);
+        EntriesChanged.InvokeAsync(Entries);
     }
 
     public void SelectedTimeSet(TimeSpan? newValue)
     {
         if (newValue == null)
         {
-            if (entries.Count == 0)
+            if (Entries.Count == 0)
             {
                 SelectedTime = TimeSpan.Zero;
                 StateHasChanged();
             }
             else
             {
-                SelectedTime = entries.Max(n => n.StartTime);
+                SelectedTime = Entries.Max(n => n.StartTime);
                 StateHasChanged();
             }
         }

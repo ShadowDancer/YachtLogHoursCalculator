@@ -13,6 +13,8 @@ public class StateService
     public int CurrentDayNumber { get; set; } = 1;
 
     public Day CurrentDay => Days[CurrentDayNumber - 1];
+    
+    public bool IsLastDay => CurrentDayNumber == Days.Count;
 
     public StateService(ILocalStorageService localStorage)
     {
@@ -27,6 +29,16 @@ public class StateService
             if (savedState != null)
             {
                 Days = savedState.Days;
+                CurrentDayNumber = Days.Count;
+                
+                // Ensure all days are properly recalculated after loading
+                for (int i = 1; i < Days.Count; i++)
+                {
+                    CurrentDayNumber = i;
+                    RecalculateFollowingDays();
+                }
+                
+                // Reset to the last day
                 CurrentDayNumber = Days.Count;
             }
             else
@@ -69,12 +81,39 @@ public class StateService
     
     public async Task SaveStateAsync()
     {
+        // Recalculate all days following the current day
+        RecalculateFollowingDays();
+        
         var state = new SavedState
         {
             Days = Days
         };
         
         await _localStorage.SetItemAsync(StateKey, state);
+    }
+    
+    /// <summary>
+    /// Recalculates all days that follow the current day
+    /// to ensure they have the correct previous day data
+    /// </summary>
+    private void RecalculateFollowingDays()
+    {
+        // Nothing to recalculate if we're on the last day
+        if (CurrentDayNumber >= Days.Count)
+        {
+            return;
+        }
+        
+        // Start from the day after current day
+        for (int i = CurrentDayNumber; i < Days.Count; i++)
+        {
+            var previousDay = i > 0 
+                ? Days[i-1].GetNextDaySummary() 
+                : LogEntrySet.Empty;
+                
+            // Update the previous day reference
+            Days[i].PreviousDay = previousDay;
+        }
     }
     
     public async Task ResetStateAsync()
