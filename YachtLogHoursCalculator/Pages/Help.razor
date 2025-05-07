@@ -1,0 +1,48 @@
+@page "/help"
+@using MudBlazor
+
+<PageTitle>Pomoc - Kalkulator godzin</PageTitle>
+
+<MudContainer Style="width: 100%; height: 100%; padding: 1rem">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudCard>
+                <MudCardHeader>
+                    <MudText Typo="Typo.h5">Jak wprowadzać wpisy w aplikacji</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body1" Class="mb-4">
+                        Aplikacja służy do obliczania godzin żeglugi na podstawie wpisów w dzienniku jachtowym; eliminuje konieczność ręcznego przeliczania godzin, lub zaokrąglania do pełnych godzin.<br/>
+                        Wpisy w aplikacji powinny być wprowadzane w ten sam sposób, jak są zapisywane w dzienniku. Czasami w wpis w aplikacji musi być utworzony z innego wpisu w dzienniku, np. na morzu odcumowanie oznacza uruchomienie silnika, a zakotwiczenie odstawienie silnika.<br/>
+                        Podróż na żaglach część kapitanów kwalifikuje jako silnik, a część ocenia co było podstawowym źródłem napędu. Z punktu widzenia stażu nie ma to znaczenia.<br/>
+                        Stanie na kotwicy/w procie/boi to postój, a stanie w dryfie to żagle.<br/>
+                        <br/>
+                        Poniżej znajdziesz przykład, jak prawidłowo wprowadzić dane:
+                    </MudText>
+                    
+                    <MudCard Elevation="0" Class="mb-6">
+                        <MudCardHeader>
+                            <MudText Typo="Typo.subtitle2">Wpisy w dzienniku jachtowym</MudText>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudImage Src="wpisy-w-dzienniku.jpg" Alt="Wpisy w dzienniku jachtowym" Fluid="true" ObjectFit="ObjectFit.Cover" />
+                        </MudCardContent>
+                    </MudCard>
+                    
+                    <MudCard Elevation="0" Class="mb-6">
+                        <MudCardHeader>
+                            <MudText Typo="Typo.subtitle2">Wpisy w aplikacji</MudText>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudImage Src="wpisy-w-aplikacji.jpg" Alt="Wpisy w aplikacji" Fluid="true" ObjectFit="ObjectFit.Cover" />
+                        </MudCardContent>
+                    </MudCard>
+                    
+                    <MudButton Href="/" Color="Color.Primary" Variant="Variant.Outlined">
+                        Powrót do kalkulatora
+                    </MudButton>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer> 
