@@ -1,29 +1,48 @@
 ﻿@page "/"
 @using YachtLogHoursCalculator.Calculator
+@using YachtLogHoursCalculator.Services
+@inject StateService StateService
+@implements IDisposable
+@inject IDialogService DialogService
+@using MudBlazor
 
-<PageTitle>Kalkulator godzin dla dziennika jachtowego</PageTitle>
+<PageTitle>Kalkulator godzin</PageTitle>
 
-<MudContainer Style="width: 100%; height: 100%">
+<MudContainer Style="width: 100%; height: 100%; padding: 1rem">
     <MudGrid>
         <MudItem xs=12>
-            <DayNavigator 
-                CurrentDay="@currentDayNumber" 
-                TotalDays="@days.Count" 
-                OnPreviousDay="@ViewPreviousDay" 
-                OnNextDay="@ViewNextDay" />
+            <MudCard>
+                <MudCardContent>
+                    <MudStack Row="true">
+                        <DayNavigator
+                            CurrentDay="@StateService.CurrentDayNumber"
+                            TotalDays="@StateService.Days.Count"
+                            OnPreviousDay="@ViewPreviousDay"
+                            OnNextDay="@ViewNextDay"/>
+                        <MudSpacer/>
+                        <MudButton
+                            Color="Color.Error"
+                            Variant="Variant.Filled"
+                            OnClick="OnCloseLogClick"
+                            Class="mr-3">
+                            Zakończ dziennik
+                        </MudButton>
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
         </MudItem>
         <MudItem xs=12>
-            <LogItems entries="@currentDay.Entries" entriesChanged="@EntriesChanged"/>
+            <LogItems entries="@StateService.CurrentDay.Entries" entriesChanged="@EntriesChanged"/>
         </MudItem>
         <MudItem xs=12>
-            <LogItemAdd entries="@currentDay.Entries" entriesChanged="@EntriesChanged"/>
+            <LogItemAdd entries="@StateService.CurrentDay.Entries" entriesChanged="@EntriesChanged"/>
         </MudItem>
         <MudItem xs=12>
-            <LogSummary PreviousDay="@currentDay.PreviousDay" Entries="@currentDay.Entries"/>
+            <LogSummary PreviousDay="@StateService.CurrentDay.PreviousDay" Entries="@StateService.CurrentDay.Entries"/>
         </MudItem>
         <MudItem xs=12>
             <MudSpacer/>
-            <MudButton Class="object-right" OnClick="() => CreateNewDay()" Color="Color.Primary" Variant="Variant.Filled">
+            <MudButton Class="object-right" OnClick="() => OpenNewDay()" Color="Color.Primary" Variant="Variant.Filled">
                 Następny dzień
             </MudButton>
         </MudItem>
@@ -31,68 +50,70 @@
 </MudContainer>
 
 @code {
-    // Day tracking
-    private int currentDayNumber = 1;
-    private List<Day> days = new List<Day>();
     
-    private Day currentDay => 
-        currentDayNumber <= days.Count 
-            ? days[currentDayNumber - 1] 
-            : CreateNewDay();
-    
-    private Day CreateNewDay()
+    private async Task OnCloseLogClick()
     {
-        var date = DateTime.Today.AddDays(days.Count);
-        var previousDay = days.Count > 0 
-            ? days.Last().GetNextDaySummary() 
-            : LogEntrySet.Empty;
-            
-        var newDay = new Day(date, previousDay);
-        
-        // If we have previous days, initialize the new day with the last entry type
-        if (days.Count > 0 && days.Last().Entries.Any())
-        {
-            var lastEntryType = days.Last().Entries.Last().Type;
-            newDay.Entries.Add(new LogEntry(TimeSpan.Zero, lastEntryType));
-        }
-        
-        currentDayNumber = days.Count + 1;
-        days.Add(newDay);
-        return newDay;
-    }
+        bool? result = await DialogService.ShowMessageBox(
+            "Potwierdzenie",
+            "Czy na pewno chcesz zakończyć dziennik? Spowoduje to usunięcie wszystkich wprowadzonych danych.",
+            yesText: "Tak, zamknij dziennik",
+            cancelText: "Anuluj"
+        );
 
-    protected override void OnInitialized()
-    {
-        // Initialize the first day if no days exist
-        if (days.Count == 0)
+        if (result == true)
         {
-            CreateNewDay();
+            await StateService.ResetStateAsync();
+        }
+        StateHasChanged();
+    } 
+    
+    private async Task OpenNewDay()
+    {
+        var entries = StateService.CurrentDay.Entries;
+        bool isEmptyDay = entries.Count == 0  || (entries.Count == 1 && entries.First().StartTime == TimeSpan.Zero);
+
+        if (isEmptyDay)
+        {
+            bool? result = await DialogService.ShowMessageBox(
+                "Potwierdzenie",
+                "Czy pewno dzisiaj nic się nie działo? Nie dodano wpisów na dzisaj.",
+                yesText: "Tak, otwórz nowy dzień",
+                cancelText: "Anuluj"
+            );
+
+            if (result != true)
+            {
+                return;
+            }
         }
         
-        base.OnInitialized();
+        StateService.OpenNewDay();
+        await StateService.SaveStateAsync();
     }
 
     public void ViewNextDay()
     {
-        if (currentDayNumber < days.Count && currentDay.Entries.Any())
-        {
-            currentDayNumber++;
-            StateHasChanged();
-            return;
-        }
+        StateService.ViewNextDay();
+        _ = StateService.SaveStateAsync();
+        StateHasChanged();
     }
     
     public void ViewPreviousDay()
     {
-        if (currentDayNumber > 1)
-        {
-            currentDayNumber--;
-            StateHasChanged();
-        }
+        StateService.ViewPreviousDay();
+        _ = StateService.SaveStateAsync();
+        StateHasChanged();
     }
 
-    public void EntriesChanged(List<LogEntry> entries)
+    public async Task EntriesChanged(List<LogEntry> entries)
     {
+        await StateService.SaveStateAsync();
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        // Ensure state is saved when component is disposed
+        _ = StateService.SaveStateAsync();
     }
 }

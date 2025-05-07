@@ -23,33 +23,33 @@
             </RowTemplate>
         </MudTable>
 
-        @if (entries.Count > 0)
+        <MudStack Row="true" Class="ma-5">
+        @if (entries.Count == 0)
         {
-            if (entries.First().StartTime != TimeSpan.Zero)
+            if (CurrentDay == 1)
             {
-                <MudStack Row="true" Class="ma-5">
-                    <MudIcon Color="Color.Warning" Icon="@Icons.Material.Filled.Warning" />
-                    <MudText Color="Color.Warning">Brakuje wpisu dla początku doby!</MudText>
-                </MudStack>
+                <MudIcon Color="Color.Info" Icon="@Icons.Material.Filled.Info"/>
+                <MudText Color="Color.Info">Wybierz godzinę zaokrętowania</MudText>
             }
-
+            else
+            {
+                <MudIcon Color="Color.Warning" Icon="@Icons.Material.Filled.Error"/>
+                <MudText Color="Color.Warning">Usunięto wpis dla godziny 0000, godziny nie będą liczone poprawnie</MudText>
+            }
         }
-        else
-        {
-            <MudStack Row="true" Class="ma-5">
-                <MudIcon Color="Color.Info" Icon="@Icons.Material.Filled.Info" />
-                <MudText Color="Color.Info">Tu pojawią się dodane wpisy</MudText>
-            </MudStack>
-        }
+        </MudStack>
     </MudCardContent>
 </MudCard>
 
 @code {
     [Parameter]
-    public List<LogEntry> entries { get; set; } = new List<LogEntry>();
+    public List<LogEntry> entries { get; set; } = new();
 
     [Parameter]
     public EventCallback<List<LogEntry>> entriesChanged { get; set; }
+    
+    [Parameter]
+    public int CurrentDay { get; set; } = 1;
 
     public void Remove(LogEntry entry)
     {
