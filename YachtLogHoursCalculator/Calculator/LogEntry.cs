@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json.Serialization;
 
 namespace YachtLogHoursCalculator.Calculator;
 
@@ -9,6 +10,10 @@ namespace YachtLogHoursCalculator.Calculator;
 /// <param name="Type">Type of events</param>
 public record LogEntry(TimeSpan StartTime, EntryType Type)
 {
+    [JsonConstructor]
+    public LogEntry() : this(TimeSpan.Zero, EntryType.Moored)
+    {
+    }
 }
 
 
@@ -29,6 +34,13 @@ public record LogEntrySet
         return new LogEntrySet(durations);
     }
     
+    [JsonConstructor]
+    public LogEntrySet()
+    {
+        Sails = TimeSpan.Zero;
+        Moored = TimeSpan.Zero;
+        Engine = TimeSpan.Zero;
+    }
 
     private LogEntrySet(Dictionary<EntryType, TimeSpan> entryDurations)
     {
@@ -37,12 +49,18 @@ public record LogEntrySet
         Sails = entryDurations.GetValueOrDefault(EntryType.Sail);
     }
     
-    public TimeSpan Sails { get; }
-    public TimeSpan Moored { get; }
-    public TimeSpan Engine { get; }
+    [JsonInclude]
+    public TimeSpan Sails { get; set; }
+    
+    [JsonInclude]
+    public TimeSpan Moored { get; set; }
+    
+    [JsonInclude]
+    public TimeSpan Engine { get; set; }
     
     public TimeSpan SailsAndEngine => Sails + Engine;
 
     public TimeSpan Sum => Sails + Engine + Moored;
-    public static LogEntrySet Empty { get; } = new(new Dictionary<EntryType, TimeSpan>());
+    
+    public static LogEntrySet Empty { get; } = new();
 }

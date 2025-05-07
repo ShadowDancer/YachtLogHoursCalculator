@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace YachtLogHoursCalculator.Calculator;
 
@@ -8,16 +9,18 @@ namespace YachtLogHoursCalculator.Calculator;
 /// </summary>
 public class Day
 {
-    public DateTime Date { get; }
-    public List<LogEntry> Entries { get; } = new();
-    public LogEntrySet PreviousDay { get; set; } = LogEntrySet.Empty;
+    [JsonInclude]
+    public List<LogEntry> Entries { get; set; } = new();
+    
+    [JsonInclude]
+    public LogEntrySet PreviousDay { get; set; }
 
-    public Day(DateTime date, LogEntrySet previousDay)
+    [JsonConstructor]
+    public Day(LogEntrySet? previousDay = null)
     {
-        Date = date;
-        PreviousDay = previousDay;
+        PreviousDay = previousDay ?? LogEntrySet.Empty;
     }
-
+    
     public LogEntrySet GetSummary()
     {
         return LogEntrySet.FromEntries(Entries);
@@ -27,6 +30,4 @@ public class Day
     {
         return LogEntrySet.FromEntries(Entries, PreviousDay);
     }
-
-    public string FormattedDate => Date.ToString("yyyy-MM-dd");
 } 
