@@ -5,7 +5,7 @@
         <MudText Typo="Typo.h6">Wpisy w dzienniku</MudText>
     </MudCardHeader>
     <MudCardContent>
-        <MudTable Items="@entries" Dense=true Striped=true Bordered=true Breakpoint="Breakpoint.None">
+        <MudTable Items="@Entries" Dense=true Striped=true Bordered=true Breakpoint="Breakpoint.None">
             <ColGroup>
                 <col />
                 <col />
@@ -24,7 +24,7 @@
         </MudTable>
 
         <MudStack Row="true" Class="ma-5">
-        @if (entries.Count == 0)
+        @if (Entries.Count == 0)
         {
             if (CurrentDay == 1)
             {
@@ -42,18 +42,18 @@
 </MudCard>
 
 @code {
-    [Parameter]
-    public List<LogEntry> entries { get; set; } = new();
+    [Parameter, EditorRequired]
+    public List<LogEntry> Entries { get; set; } = new();
 
-    [Parameter]
-    public EventCallback<List<LogEntry>> entriesChanged { get; set; }
+    [Parameter, EditorRequired]
+    public EventCallback<List<LogEntry>> EntriesChanged { get; set; }
     
-    [Parameter]
+    [Parameter, EditorRequired]
     public int CurrentDay { get; set; } = 1;
 
     public void Remove(LogEntry entry)
     {
-        entries.Remove(entry);
-        entriesChanged.InvokeAsync(entries);
+        Entries.Remove(entry);
+        EntriesChanged.InvokeAsync(Entries);
     }
 }

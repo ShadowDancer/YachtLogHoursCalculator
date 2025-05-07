@@ -11,16 +11,16 @@
 </MudStack>
 
 @code {
-    [Parameter]
+    [Parameter, EditorRequired]
     public int CurrentDay { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public int TotalDays { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public EventCallback OnPreviousDay { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public EventCallback OnNextDay { get; set; }
 
     private async Task PreviousDay()
