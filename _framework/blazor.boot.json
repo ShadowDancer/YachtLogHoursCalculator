@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "YachtLogHoursCalculator",
   "resources": {
-    "hash": "sha256-1e0WYHvRwGOaIofheoqWitCjo5Y5ttWaP12KYDFCPLE=",
+    "hash": "sha256-uW/EF5FiHWZ1FlcWSvsSUlsyIRWV5IagVuh0QQ6VfTM=",
     "fingerprinting": {
       "Blazored.LocalStorage.ezmmaf2hxy.wasm": "Blazored.LocalStorage.wasm",
       "Microsoft.AspNetCore.Components.Forms.xwqw8hmtxg.wasm": "Microsoft.AspNetCore.Components.Forms.wasm",
@@ -21,7 +21,7 @@
       "Microsoft.Extensions.Primitives.ihsc9l5exw.wasm": "Microsoft.Extensions.Primitives.wasm",
       "Microsoft.JSInterop.uv2bbr5r9r.wasm": "Microsoft.JSInterop.wasm",
       "Microsoft.JSInterop.WebAssembly.lsljofql11.wasm": "Microsoft.JSInterop.WebAssembly.wasm",
-      "MudBlazor.3ymdzhq8r9.wasm": "MudBlazor.wasm",
+      "MudBlazor.oium60kv23.wasm": "MudBlazor.wasm",
       "System.Collections.Concurrent.kedpi9jq99.wasm": "System.Collections.Concurrent.wasm",
       "System.Collections.Immutable.zgcqoiukq0.wasm": "System.Collections.Immutable.wasm",
       "System.Collections.8dzylp56ry.wasm": "System.Collections.wasm",
@@ -46,9 +46,9 @@
       "System.Text.Json.i3zgvrigfu.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.o2j5vsq2gw.wasm": "System.Text.RegularExpressions.wasm",
       "System.f0fr8djds0.wasm": "System.wasm",
-      "YachtLogHoursCalculator.k0quy6s8gr.wasm": "YachtLogHoursCalculator.wasm",
+      "YachtLogHoursCalculator.ro5qfv4ino.wasm": "YachtLogHoursCalculator.wasm",
       "dotnet.native.aniutm6w3u.js": "dotnet.native.js",
-      "dotnet.native.tbhhn1398y.wasm": "dotnet.native.wasm",
+      "dotnet.native.hz7pu6lm43.wasm": "dotnet.native.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.runtime.cymp1amu5g.js": "dotnet.runtime.js"
     },
@@ -59,7 +59,7 @@
       "dotnet.runtime.cymp1amu5g.js": "sha256-dCmS9Zx4egtLYSUgTI3R6gMS+Yg8MkzxW1CgEMJKAEw="
     },
     "wasmNative": {
-      "dotnet.native.tbhhn1398y.wasm": "sha256-BwOeylbMjlmzXwbfOjkGtSUlivERITJkdUprR9YWCWc="
+      "dotnet.native.hz7pu6lm43.wasm": "sha256-rXrINCcUJyFra0FmunDipf6CQWSsVg0k97JZV04f+f0="
     },
     "coreAssembly": {
       "Blazored.LocalStorage.ezmmaf2hxy.wasm": "sha256-2mNZvulqNDIJArGSLBWgoEvglbj5V13XdNdOQlN8wbw=",
@@ -80,7 +80,7 @@
       "Microsoft.Extensions.Primitives.ihsc9l5exw.wasm": "sha256-yvecHeiA1zrGVgFTUfyhbENy78UmpPDX6HLAdxYRbtA=",
       "Microsoft.JSInterop.uv2bbr5r9r.wasm": "sha256-ptUNJaBEpUOucicx4NcvwqBakxD5WmCj8gsUw9SNUfY=",
       "Microsoft.JSInterop.WebAssembly.lsljofql11.wasm": "sha256-63bzxZLVvNOmTsso6iLrptxGmKBQh2HUIEGtPUrRPeQ=",
-      "MudBlazor.3ymdzhq8r9.wasm": "sha256-azxIhrReC9p72LhxCU5DNFSoAD5hpqekjeBKxFcI00E=",
+      "MudBlazor.oium60kv23.wasm": "sha256-APbQFKRT9imCpQROPQtQTkYGfjYeOf2ZijEBmp4LMDk=",
       "System.Collections.Concurrent.kedpi9jq99.wasm": "sha256-HNYcxzomVk5lQRv54wNf3hJ+59ju38rCluOHpqY1JcM=",
       "System.Collections.Immutable.zgcqoiukq0.wasm": "sha256-o0HkBbIXditb4ETuEtkiPf9yfr5D0l2NCmncW+HIClM=",
       "System.Collections.8dzylp56ry.wasm": "sha256-jPAgSL/qsWhjQemu9HhQcEddGIsicyNCHxnJRzB0IvU=",
@@ -105,7 +105,7 @@
       "System.Text.Json.i3zgvrigfu.wasm": "sha256-Uv8PAJSqUuDSUk76/q81w/DcbqKo/CC/m3obOmRiG6w=",
       "System.Text.RegularExpressions.o2j5vsq2gw.wasm": "sha256-0H4sCwv4HW41ScW27yj2wUSDh/wiq/C6czK1L5RKnLY=",
       "System.f0fr8djds0.wasm": "sha256-v1DeJU321NUwk3KJ0Lf8lQA3zwRfrxNommmMBs1s3Gk=",
-      "YachtLogHoursCalculator.k0quy6s8gr.wasm": "sha256-zCYvTJydtAC5wBAJ1PtytUc1h8mb0ylkfOd5OaF4w1Q="
+      "YachtLogHoursCalculator.ro5qfv4ino.wasm": "sha256-S6og/BihhrIngd1TeNWLtzDeiSCLgmERBxrWKMVBaew="
     },
     "assembly": {}
   },
